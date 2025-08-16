@@ -658,7 +658,7 @@ function App() {
             </div>
 
             {/* Sections */}
-            <div className="space-y-6">
+            <div className="space-y-8">
               {major.sections.map((section, sectionIndex) => {
                 // Hide concentration sections unless they're selected
                 if (section.key.endsWith("-concentration")) {
@@ -680,37 +680,37 @@ function App() {
                 return (
                   <div
                     key={section.key}
-                    className="bg-white rounded-lg shadow-sm p-6"
+                    className="bg-white rounded-xl shadow-sm border border-gray-100 p-8"
                   >
                     {/* Section Header */}
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-6">
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">
                           {section.title}
                         </h3>
                         {section.description && (
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-base text-gray-700 leading-relaxed">
                             {section.description}
                           </p>
                         )}
                       </div>
 
                       {/* Section Progress */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <div className="text-sm font-medium text-gray-700">
+                          <div className="text-sm font-semibold text-gray-700 mb-1">
                             Progress
                           </div>
-                          <div className="text-lg font-bold text-blue-600">
+                          <div className="text-2xl font-bold text-blue-600">
                             {Math.round(sectionProgress(section))}%
                           </div>
                         </div>
-                        <div className="w-24 bg-gray-200 rounded-full h-3">
+                        <div className="w-32 bg-gray-200 rounded-full h-4">
                           <div
-                            className={`h-3 rounded-full transition-all duration-300 ${
+                            className={`h-4 rounded-full transition-all duration-300 ${
                               sectionSatisfied(section)
-                                ? "bg-green-600"
-                                : "bg-blue-600"
+                                ? "bg-green-500"
+                                : "bg-blue-500"
                             }`}
                             style={{ width: `${sectionProgress(section)}%` }}
                           ></div>
@@ -722,35 +722,35 @@ function App() {
                     <div className="space-y-4">
                       {/* Groups (for complex sections like Calculus & Linear Algebra) */}
                       {section.groups && (
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                           {section.groups.map((group, groupIndex) => (
                             <div
                               key={group.key}
-                              className="ml-4 border-l-2 border-gray-200 pl-4"
+                              className="ml-6 border-l-4 border-blue-200 pl-6 bg-blue-50 rounded-lg p-4"
                             >
-                              <div className="text-sm font-medium text-gray-700 mb-2">
+                              <div className="text-lg font-semibold text-blue-800 mb-3">
                                 {group.title}
                               </div>
-                              <div className="space-y-2">
+                              <div className="space-y-3">
                                 {group.items.map((item, itemIndex) => (
                                   <div
                                     key={item.code}
-                                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                    className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-100 shadow-sm"
                                   >
                                     <div className="flex-1">
-                                      <div className="font-medium text-gray-900">
+                                      <div className="font-bold text-gray-900 text-lg">
                                         {item.code}
                                       </div>
-                                      <div className="text-sm text-gray-600">
+                                      <div className="text-base text-gray-700 mt-1">
                                         {item.title}
                                       </div>
-                                      <div className="text-xs text-gray-500">
+                                      <div className="text-sm text-gray-500 mt-1">
                                         {item.units} units
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <select
-                                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border-0 ${
                                           STATUS_META[
                                             item.status as keyof typeof STATUS_META
                                           ]?.color ||
@@ -783,20 +783,20 @@ function App() {
 
                       {/* Regular Items */}
                       {section.items && !section.groups && (
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           {section.items.map((item, itemIndex) => (
                             <div
                               key={item.code}
-                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
                             >
                               <div className="flex-1">
-                                <div className="font-medium text-gray-900">
+                                <div className="font-bold text-gray-900 text-lg">
                                   {item.code}
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-base text-gray-700 mt-1">
                                   {item.title}
                                 </div>
-                                <div className="text-xs text-gray-500">
+                                <div className="text-sm text-gray-500 mt-1">
                                   {item.units} units
                                 </div>
                               </div>
@@ -962,8 +962,8 @@ function App() {
                                     <>
                                       {/* Primary Concentration Courses */}
                                       {primary && (
-                                        <div className="border-l-4 border-blue-500 pl-4">
-                                          <h4 className="font-semibold text-blue-700 mb-3">
+                                        <div className="border-l-4 border-blue-500 pl-6 bg-blue-50 rounded-lg p-6">
+                                          <h4 className="font-bold text-blue-800 text-xl mb-4">
                                             {
                                               CONCENTRATION_OPTIONS.find(
                                                 (opt) => opt.value === primary
@@ -971,27 +971,27 @@ function App() {
                                             }{" "}
                                             (Primary - ≥25 units)
                                           </h4>
-                                          <div className="space-y-2">
+                                          <div className="space-y-3">
                                             {getConcentrationCourses(
                                               primary
                                             ).map((course, courseIndex) => (
                                               <div
                                                 key={course.code}
-                                                className="flex items-center justify-between p-3 bg-blue-50 rounded-lg"
+                                                className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-100 shadow-sm"
                                               >
                                                 <div className="flex-1">
-                                                  <div className="font-medium text-gray-900">
+                                                  <div className="font-bold text-gray-900 text-lg">
                                                     {course.code}
                                                   </div>
-                                                  <div className="text-sm text-gray-600">
+                                                  <div className="text-base text-gray-700 mt-1">
                                                     {course.title}
                                                   </div>
-                                                  <div className="text-xs text-gray-500">
+                                                  <div className="text-sm text-gray-500 mt-1">
                                                     {course.units} units
                                                   </div>
                                                 </div>
                                                 <select
-                                                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border-0 ${
                                                     STATUS_META[
                                                       course.status as keyof typeof STATUS_META
                                                     ]?.color ||
@@ -1033,7 +1033,7 @@ function App() {
                                               </div>
                                             ))}
                                           </div>
-                                          <div className="mt-3 text-sm text-blue-600">
+                                          <div className="mt-4 text-base font-semibold text-blue-700">
                                             Progress:{" "}
                                             {Math.round(
                                               calculateConcentrationProgress(
@@ -1052,8 +1052,8 @@ function App() {
 
                                       {/* Secondary Concentration Courses */}
                                       {secondary && (
-                                        <div className="border-l-4 border-green-500 pl-4">
-                                          <h4 className="font-semibold text-green-700 mb-3">
+                                        <div className="border-l-4 border-green-500 pl-6 bg-green-50 rounded-lg p-6">
+                                          <h4 className="font-bold text-green-800 text-xl mb-4">
                                             {
                                               CONCENTRATION_OPTIONS.find(
                                                 (opt) => opt.value === secondary
@@ -1061,27 +1061,27 @@ function App() {
                                             }{" "}
                                             (Secondary - ≥15 units)
                                           </h4>
-                                          <div className="space-y-2">
+                                          <div className="space-y-3">
                                             {getConcentrationCourses(
                                               secondary
                                             ).map((course, courseIndex) => (
                                               <div
                                                 key={course.code}
-                                                className="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+                                                className="flex items-center justify-between p-4 bg-white rounded-lg border border-green-100 shadow-sm"
                                               >
                                                 <div className="flex-1">
-                                                  <div className="font-medium text-gray-900">
+                                                  <div className="font-bold text-gray-900 text-lg">
                                                     {course.code}
                                                   </div>
-                                                  <div className="text-sm text-gray-600">
+                                                  <div className="text-base text-gray-700 mt-1">
                                                     {course.title}
                                                   </div>
-                                                  <div className="text-xs text-gray-500">
+                                                  <div className="text-sm text-gray-500 mt-1">
                                                     {course.units} units
                                                   </div>
                                                 </div>
                                                 <select
-                                                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border-0 ${
                                                     STATUS_META[
                                                       course.status as keyof typeof STATUS_META
                                                     ]?.color ||
@@ -1123,7 +1123,7 @@ function App() {
                                               </div>
                                             ))}
                                           </div>
-                                          <div className="mt-3 text-sm text-green-600">
+                                          <div className="mt-4 text-base font-semibold text-green-700">
                                             Progress:{" "}
                                             {Math.round(
                                               calculateConcentrationProgress(
@@ -1155,8 +1155,8 @@ function App() {
                                   if (!concentrationData) return null;
 
                                   return (
-                                    <div className="border-l-4 border-purple-500 pl-4">
-                                      <h4 className="font-semibold text-purple-700 mb-3">
+                                    <div className="border-l-4 border-purple-500 pl-6 bg-purple-50 rounded-lg p-6">
+                                      <h4 className="font-bold text-purple-800 text-xl mb-4">
                                         {
                                           SYMSYS_CONCENTRATION_OPTIONS.find(
                                             (opt) =>
@@ -1166,39 +1166,39 @@ function App() {
                                         }{" "}
                                         Concentration
                                       </h4>
-                                      <div className="space-y-4">
+                                      <div className="space-y-6">
                                         {concentrationData.subsections.map(
                                           (subsection, subsectionIndex) => (
                                             <div
                                               key={subsection.key}
-                                              className="space-y-2"
+                                              className="space-y-3"
                                             >
-                                              <h5 className="font-medium text-purple-600 text-sm">
+                                              <h5 className="font-semibold text-purple-700 text-lg">
                                                 {subsection.title}
                                               </h5>
-                                              <p className="text-xs text-gray-600 mb-2">
+                                              <p className="text-base text-gray-700 mb-3">
                                                 {subsection.description}
                                               </p>
-                                              <div className="space-y-2">
+                                              <div className="space-y-3">
                                                 {subsection.items.map(
                                                   (course, courseIndex) => (
                                                     <div
                                                       key={course.code}
-                                                      className="flex items-center justify-between p-3 bg-purple-50 rounded-lg ml-4"
+                                                      className="flex items-center justify-between p-4 bg-white rounded-lg border border-purple-100 shadow-sm ml-4"
                                                     >
                                                       <div className="flex-1">
-                                                        <div className="font-medium text-gray-900">
+                                                        <div className="font-bold text-gray-900 text-lg">
                                                           {course.code}
                                                         </div>
-                                                        <div className="text-sm text-gray-600">
+                                                        <div className="text-base text-gray-700 mt-1">
                                                           {course.title}
                                                         </div>
-                                                        <div className="text-xs text-gray-500">
+                                                        <div className="text-sm text-gray-500 mt-1">
                                                           {course.units} units
                                                         </div>
                                                       </div>
                                                       <select
-                                                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border-0 ${
                                                           STATUS_META[
                                                             course.status as keyof typeof STATUS_META
                                                           ]?.color ||
@@ -1283,7 +1283,7 @@ function App() {
                                           )
                                         )}
                                       </div>
-                                      <div className="mt-3 text-sm text-purple-600">
+                                      <div className="mt-6 text-base font-semibold text-purple-700">
                                         Progress:{" "}
                                         {(() => {
                                           // Calculate progress based on completed subsections
@@ -1405,44 +1405,44 @@ function App() {
 
                       {/* Subsections (for complex sections like Capstone) */}
                       {section.subsections && (
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                           {section.subsections.map(
                             (subsection, subsectionIndex) => (
                               <div
                                 key={subsection.key}
-                                className="ml-4 border-l-2 border-gray-200 pl-4"
+                                className="ml-6 border-l-4 border-green-200 pl-6 bg-green-50 rounded-lg p-4"
                               >
-                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
+                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
                                   <div className="flex-1">
-                                    <div className="font-medium text-gray-900">
+                                    <div className="text-lg font-semibold text-green-800 mb-2">
                                       {subsection.title}
                                     </div>
                                     {subsection.description && (
-                                      <div className="text-sm text-gray-600 mt-1">
+                                      <div className="text-base text-gray-700 leading-relaxed">
                                         {subsection.description}
                                       </div>
                                     )}
                                   </div>
 
                                   {/* Subsection Progress */}
-                                  <div className="flex items-center gap-3">
+                                  <div className="flex items-center gap-4">
                                     <div className="text-right">
-                                      <div className="text-sm font-medium text-gray-700">
+                                      <div className="text-sm font-semibold text-gray-700 mb-1">
                                         Progress
                                       </div>
-                                      <div className="text-lg font-bold text-blue-600">
+                                      <div className="text-xl font-bold text-green-600">
                                         {Math.round(
                                           sectionProgress(subsection)
                                         )}
                                         %
                                       </div>
                                     </div>
-                                    <div className="w-24 bg-gray-200 rounded-full h-3">
+                                    <div className="w-28 bg-gray-200 rounded-full h-3">
                                       <div
                                         className={`h-3 rounded-full transition-all duration-300 ${
                                           sectionSatisfied(subsection)
-                                            ? "bg-green-600"
-                                            : "bg-blue-600"
+                                            ? "bg-green-500"
+                                            : "bg-green-400"
                                         }`}
                                         style={{
                                           width: `${sectionProgress(
@@ -1456,26 +1456,26 @@ function App() {
 
                                 {/* Subsection Items */}
                                 {subsection.items && (
-                                  <div className="space-y-2">
+                                  <div className="space-y-3">
                                     {subsection.items.map((item, itemIndex) => (
                                       <div
                                         key={item.code}
-                                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                        className="flex items-center justify-between p-4 bg-white rounded-lg border border-green-100 shadow-sm"
                                       >
                                         <div className="flex-1">
-                                          <div className="font-medium text-gray-900">
+                                          <div className="font-bold text-gray-900 text-lg">
                                             {item.code}
                                           </div>
-                                          <div className="text-sm text-gray-600">
+                                          <div className="text-base text-gray-700 mt-1">
                                             {item.title}
                                           </div>
-                                          <div className="text-xs text-gray-500">
+                                          <div className="text-sm text-gray-500 mt-1">
                                             {item.units} units
                                           </div>
                                         </div>
                                         <div className="flex items-center gap-2">
                                           <select
-                                            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border-0 ${
                                               STATUS_META[
                                                 item.status as keyof typeof STATUS_META
                                               ]?.color ||
