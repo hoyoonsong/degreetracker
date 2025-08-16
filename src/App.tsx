@@ -44,6 +44,31 @@ interface AppData {
   majors: Major[];
 }
 
+// Concentration options for Political Science
+const CONCENTRATION_OPTIONS = [
+  { value: "data-science", label: "Data Science" },
+  {
+    value: "elections-governance",
+    label: "Elections, Representation & Governance",
+  },
+  { value: "international-relations", label: "International Relations" },
+  { value: "justice-law", label: "Justice & Law" },
+  { value: "political-economy", label: "Political Economy & Development" },
+];
+
+// Concentration options for Symbolic Systems
+const SYMSYS_CONCENTRATION_OPTIONS = [
+  { value: "human-centered-ai", label: "Human Centered AI" },
+  { value: "human-computer-interaction", label: "Human Computer Interaction" },
+  { value: "artificial-intelligence", label: "Artificial Intelligence" },
+  { value: "computer-music", label: "Computer Music" },
+  {
+    value: "computational-social-science",
+    label: "Computational Social Science",
+  },
+  { value: "computational-foundations", label: "Computational Foundations" },
+];
+
 // Main App component
 function App() {
   const [data, setData] = useState<AppData>(INITIAL_DATA);
@@ -69,6 +94,94 @@ function App() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
+
+  // Get concentration selection values for Political Science
+  const getConcentrationSelection = () => {
+    const polisciMajor = data.majors.find((m) => m.key === "polisci");
+    if (!polisciMajor) return { primary: "", secondary: "" };
+
+    const concentrationSection = polisciMajor.sections.find(
+      (s) => s.key === "concentration-selection"
+    );
+    if (!concentrationSection || !concentrationSection.items)
+      return { primary: "", secondary: "" };
+
+    const primaryItem = concentrationSection.items.find(
+      (item) => item.code === "Primary Concentration"
+    );
+    const secondaryItem = concentrationSection.items.find(
+      (item) => item.code === "Secondary Concentration"
+    );
+
+    return {
+      primary: primaryItem?.status || "",
+      secondary: secondaryItem?.status || "",
+    };
+  };
+
+  // Get concentration selection value for Symbolic Systems
+  const getSymSysConcentrationSelection = () => {
+    const symsysMajor = data.majors.find((m) => m.key === "symsys");
+    if (!symsysMajor) return "";
+
+    const concentrationSection = symsysMajor.sections.find(
+      (s) => s.key === "concentration-selection"
+    );
+    if (!concentrationSection || !concentrationSection.items) return "";
+
+    const concentrationItem = concentrationSection.items.find(
+      (item) => item.code === "concentration"
+    );
+
+    return concentrationItem?.status || "";
+  };
+
+  // Get courses for a specific concentration
+  const getConcentrationCourses = (concentrationKey: string) => {
+    const polisciMajor = data.majors.find((m) => m.key === "polisci");
+    if (!polisciMajor) return [];
+
+    const concentrationSection = polisciMajor.sections.find(
+      (s) => s.key === `${concentrationKey}-concentration`
+    );
+    return concentrationSection?.items || [];
+  };
+
+  // Get courses for a specific SymSys concentration
+  const getSymSysConcentrationCourses = (concentrationKey: string) => {
+    const symsysMajor = data.majors.find((m) => m.key === "symsys");
+    if (!symsysMajor) return [];
+
+    const concentrationSection = symsysMajor.sections.find(
+      (s) => s.key === `${concentrationKey}-concentration`
+    );
+    return concentrationSection?.items || [];
+  };
+
+  // Calculate concentration progress
+  const calculateConcentrationProgress = (
+    concentrationKey: string,
+    minUnits: number
+  ) => {
+    const courses = getConcentrationCourses(concentrationKey);
+    const taken = sumUnitsTaken(courses);
+    return Math.min((taken / minUnits) * 100, 100);
+  };
+
+  // Calculate SymSys concentration progress
+  const calculateSymSysConcentrationProgress = (concentrationKey: string) => {
+    const courses = getSymSysConcentrationCourses(concentrationKey);
+    const total = courses.length;
+    if (total === 0) return 0;
+
+    const completed = courses.filter(
+      (course) =>
+        course.status === STATUS.TAKEN ||
+        course.status === STATUS.CURRENTLY_TAKING
+    ).length;
+
+    return Math.min((completed / total) * 100, 100);
+  };
 
   // Import JSON file
   const importJson = (file: File) => {
@@ -118,6 +231,28 @@ function App() {
 
   // Calculate section progress
   const sectionProgress = (section: CourseSection): number => {
+    // Special handling for concentration selection section
+    if (section.key === "concentration-selection") {
+      const major = data.majors[activeMajor];
+      if (major.key === "polisci") {
+        // Political Science: two concentrations
+        const { primary, secondary } = getConcentrationSelection();
+        if (!primary || !secondary) return 0;
+
+        const primaryProgress = calculateConcentrationProgress(primary, 25);
+        const secondaryProgress = calculateConcentrationProgress(secondary, 15);
+
+        return (primaryProgress + secondaryProgress) / 2;
+      } else if (major.key === "symsys") {
+        // Symbolic Systems: one concentration
+        const selectedConcentration = getSymSysConcentrationSelection();
+        if (!selectedConcentration) return 0;
+
+        return calculateSymSysConcentrationProgress(selectedConcentration);
+      }
+      return 0;
+    }
+
     // If section has subsections, calculate progress based on subsections
     if (section.subsections) {
       const totalSubsections = section.subsections.length;
@@ -166,6 +301,37 @@ function App() {
 
   // Check if a section is satisfied
   const sectionSatisfied = (section: CourseSection): boolean => {
+    // Special handling for concentration selection section
+    if (section.key === "concentration-selection") {
+      const major = data.majors[activeMajor];
+      if (major.key === "polisci") {
+        // Political Science: two concentrations
+        const { primary, secondary } = getConcentrationSelection();
+        if (!primary || !secondary) return false;
+
+        const primarySatisfied =
+          sumUnitsTaken(getConcentrationCourses(primary)) >= 25;
+        const secondarySatisfied =
+          sumUnitsTaken(getConcentrationCourses(secondary)) >= 15;
+
+        return primarySatisfied && secondarySatisfied;
+      } else if (major.key === "symsys") {
+        // Symbolic Systems: one concentration
+        const selectedConcentration = getSymSysConcentrationSelection();
+        if (!selectedConcentration) return false;
+
+        const concentrationCourses = getSymSysConcentrationCourses(
+          selectedConcentration
+        );
+        return concentrationCourses.every(
+          (course) =>
+            course.status === STATUS.TAKEN ||
+            course.status === STATUS.CURRENTLY_TAKING
+        );
+      }
+      return false;
+    }
+
     // If section has subsections, check if all subsections are satisfied
     if (section.subsections) {
       return section.subsections.every((subsection: CourseSection) =>
@@ -263,6 +429,39 @@ function App() {
 
     return totalProgress / totalMajors;
   }, [data]);
+
+  // Update concentration selection
+  const updateConcentrationSelection = (
+    type: "primary" | "secondary",
+    value: string
+  ) => {
+    setData((prevData: AppData) => {
+      const newData = JSON.parse(JSON.stringify(prevData));
+      const polisciMajor = newData.majors.find(
+        (m: Major) => m.key === "polisci"
+      );
+      if (!polisciMajor) return prevData;
+
+      const concentrationSection = polisciMajor.sections.find(
+        (s: CourseSection) => s.key === "concentration-selection"
+      );
+      if (!concentrationSection || !concentrationSection.items) return prevData;
+
+      const item = concentrationSection.items.find(
+        (item: CourseItem) =>
+          item.code ===
+          (type === "primary"
+            ? "Primary Concentration"
+            : "Secondary Concentration")
+      );
+
+      if (item) {
+        item.status = value;
+      }
+
+      return newData;
+    });
+  };
 
   // Update item status - simplified and more robust
   const updateItemStatus = (path: string, newStatus: string) => {
@@ -459,326 +658,741 @@ function App() {
 
             {/* Sections */}
             <div className="space-y-6">
-              {major.sections.map((section, sectionIndex) => (
-                <div
-                  key={section.key}
-                  className="bg-white rounded-lg shadow-sm p-6"
-                >
-                  {/* Section Header */}
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {section.title}
-                      </h3>
-                      {section.description && (
-                        <p className="text-sm text-gray-600 mt-1">
-                          {section.description}
-                        </p>
-                      )}
-                    </div>
+              {major.sections.map((section, sectionIndex) => {
+                // Hide concentration sections unless they're selected
+                if (section.key.endsWith("-concentration")) {
+                  const major = data.majors[majorIndex];
+                  if (major.key === "polisci") {
+                    // Political Science: hide all concentration sections
+                    return null;
+                  } else if (major.key === "symsys") {
+                    const selectedConcentration =
+                      getSymSysConcentrationSelection();
+                    if (
+                      section.key !== `${selectedConcentration}-concentration`
+                    ) {
+                      return null; // Hide unselected concentrations
+                    }
+                  }
+                }
 
-                    {/* Section Progress */}
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <div className="text-sm font-medium text-gray-700">
-                          Progress
-                        </div>
-                        <div className="text-lg font-bold text-blue-600">
-                          {Math.round(sectionProgress(section))}%
-                        </div>
-                      </div>
-                      <div className="w-24 bg-gray-200 rounded-full h-3">
-                        <div
-                          className={`h-3 rounded-full transition-all duration-300 ${
-                            sectionSatisfied(section)
-                              ? "bg-green-600"
-                              : "bg-blue-600"
-                          }`}
-                          style={{ width: `${sectionProgress(section)}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Section Content */}
-                  <div className="space-y-4">
-                    {/* Groups (for complex sections like Calculus & Linear Algebra) */}
-                    {section.groups && (
-                      <div className="space-y-4">
-                        {section.groups.map((group, groupIndex) => (
-                          <div
-                            key={group.key}
-                            className="ml-4 border-l-2 border-gray-200 pl-4"
-                          >
-                            <div className="text-sm font-medium text-gray-700 mb-2">
-                              {group.title}
-                            </div>
-                            <div className="space-y-2">
-                              {group.items.map((item, itemIndex) => (
-                                <div
-                                  key={item.code}
-                                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                                >
-                                  <div className="flex-1">
-                                    <div className="font-medium text-gray-900">
-                                      {item.code}
-                                    </div>
-                                    <div className="text-sm text-gray-600">
-                                      {item.title}
-                                    </div>
-                                    <div className="text-xs text-gray-500">
-                                      {item.units} units
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <select
-                                      className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                        STATUS_META[
-                                          item.status as keyof typeof STATUS_META
-                                        ]?.color || "bg-gray-200 text-gray-800"
-                                      }`}
-                                      value={item.status}
-                                      onChange={(e) =>
-                                        updateItemStatus(
-                                          `majors.${majorIndex}.sections.${sectionIndex}.groups.${groupIndex}.items.${itemIndex}`,
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      {Object.entries(STATUS_META).map(
-                                        ([key, value]) => (
-                                          <option key={key} value={key}>
-                                            {value.label}
-                                          </option>
-                                        )
-                                      )}
-                                    </select>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Regular Items */}
-                    {section.items && !section.groups && (
-                      <div className="space-y-2">
-                        {section.items.map((item, itemIndex) => (
-                          <div
-                            key={item.code}
-                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                          >
-                            <div className="flex-1">
-                              <div className="font-medium text-gray-900">
-                                {item.code}
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {item.title}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {item.units} units
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <select
-                                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                  STATUS_META[
-                                    item.status as keyof typeof STATUS_META
-                                  ]?.color || "bg-gray-200 text-gray-800"
-                                }`}
-                                value={item.status}
-                                onChange={(e) =>
-                                  updateItemStatus(
-                                    `majors.${majorIndex}.sections.${sectionIndex}.items.${itemIndex}`,
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                {Object.entries(STATUS_META).map(
-                                  ([key, value]) => (
-                                    <option key={key} value={key}>
-                                      {value.label}
-                                    </option>
-                                  )
-                                )}
-                              </select>
-
-                              {/* Remove button for editable sections */}
-                              {section.editable && (
-                                <button
-                                  onClick={() =>
-                                    removeCourse(
-                                      majorIndex,
-                                      sectionIndex,
-                                      itemIndex
-                                    )
-                                  }
-                                  className="px-2 py-1 text-red-600 hover:bg-red-50 rounded text-sm"
-                                >
-                                  ×
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-
-                        {/* Add course form for editable sections */}
-                        {section.editable && (
-                          <div className="border-t pt-4">
-                            <div className="flex gap-2">
-                              <input
-                                type="text"
-                                placeholder="Course code (e.g., POLISCI 150)"
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
-                                onKeyPress={(e) => {
-                                  if (e.key === "Enter") {
-                                    const target = e.target as HTMLInputElement;
-                                    const code = target.value;
-                                    const titleInput = target.parentElement
-                                      ?.nextElementSibling as HTMLInputElement;
-                                    const unitsInput =
-                                      titleInput?.nextElementSibling as HTMLInputElement;
-                                    if (
-                                      code &&
-                                      titleInput?.value &&
-                                      unitsInput?.value
-                                    ) {
-                                      addCourse(
-                                        majorIndex,
-                                        sectionIndex,
-                                        code,
-                                        titleInput.value,
-                                        parseInt(unitsInput.value)
-                                      );
-                                      target.value = "";
-                                      titleInput.value = "";
-                                      unitsInput.value = "";
-                                    }
-                                  }
-                                }}
-                              />
-                              <input
-                                type="text"
-                                placeholder="Course title"
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
-                              />
-                              <input
-                                type="number"
-                                placeholder="Units"
-                                className="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm"
-                              />
-                            </div>
-                          </div>
+                return (
+                  <div
+                    key={section.key}
+                    className="bg-white rounded-lg shadow-sm p-6"
+                  >
+                    {/* Section Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {section.title}
+                        </h3>
+                        {section.description && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            {section.description}
+                          </p>
                         )}
                       </div>
-                    )}
 
-                    {/* Subsections (for complex sections like Capstone) */}
-                    {section.subsections && (
-                      <div className="space-y-4">
-                        {section.subsections.map(
-                          (subsection, subsectionIndex) => (
+                      {/* Section Progress */}
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <div className="text-sm font-medium text-gray-700">
+                            Progress
+                          </div>
+                          <div className="text-lg font-bold text-blue-600">
+                            {Math.round(sectionProgress(section))}%
+                          </div>
+                        </div>
+                        <div className="w-24 bg-gray-200 rounded-full h-3">
+                          <div
+                            className={`h-3 rounded-full transition-all duration-300 ${
+                              sectionSatisfied(section)
+                                ? "bg-green-600"
+                                : "bg-blue-600"
+                            }`}
+                            style={{ width: `${sectionProgress(section)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section Content */}
+                    <div className="space-y-4">
+                      {/* Groups (for complex sections like Calculus & Linear Algebra) */}
+                      {section.groups && (
+                        <div className="space-y-4">
+                          {section.groups.map((group, groupIndex) => (
                             <div
-                              key={subsection.key}
+                              key={group.key}
                               className="ml-4 border-l-2 border-gray-200 pl-4"
                             >
-                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
-                                <div className="flex-1">
-                                  <div className="font-medium text-gray-900">
-                                    {subsection.title}
-                                  </div>
-                                  {subsection.description && (
-                                    <div className="text-sm text-gray-600 mt-1">
-                                      {subsection.description}
+                              <div className="text-sm font-medium text-gray-700 mb-2">
+                                {group.title}
+                              </div>
+                              <div className="space-y-2">
+                                {group.items.map((item, itemIndex) => (
+                                  <div
+                                    key={item.code}
+                                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                  >
+                                    <div className="flex-1">
+                                      <div className="font-medium text-gray-900">
+                                        {item.code}
+                                      </div>
+                                      <div className="text-sm text-gray-600">
+                                        {item.title}
+                                      </div>
+                                      <div className="text-xs text-gray-500">
+                                        {item.units} units
+                                      </div>
                                     </div>
-                                  )}
-                                </div>
+                                    <div className="flex items-center gap-2">
+                                      <select
+                                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                          STATUS_META[
+                                            item.status as keyof typeof STATUS_META
+                                          ]?.color ||
+                                          "bg-gray-200 text-gray-800"
+                                        }`}
+                                        value={item.status}
+                                        onChange={(e) =>
+                                          updateItemStatus(
+                                            `majors.${majorIndex}.sections.${sectionIndex}.groups.${groupIndex}.items.${itemIndex}`,
+                                            e.target.value
+                                          )
+                                        }
+                                      >
+                                        {Object.entries(STATUS_META).map(
+                                          ([key, value]) => (
+                                            <option key={key} value={key}>
+                                              {value.label}
+                                            </option>
+                                          )
+                                        )}
+                                      </select>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
-                                {/* Subsection Progress */}
-                                <div className="flex items-center gap-3">
-                                  <div className="text-right">
-                                    <div className="text-sm font-medium text-gray-700">
-                                      Progress
-                                    </div>
-                                    <div className="text-lg font-bold text-blue-600">
-                                      {Math.round(sectionProgress(subsection))}%
-                                    </div>
-                                  </div>
-                                  <div className="w-24 bg-gray-200 rounded-full h-3">
-                                    <div
-                                      className={`h-3 rounded-full transition-all duration-300 ${
-                                        sectionSatisfied(subsection)
-                                          ? "bg-green-600"
-                                          : "bg-blue-600"
-                                      }`}
-                                      style={{
-                                        width: `${sectionProgress(
-                                          subsection
-                                        )}%`,
-                                      }}
-                                    ></div>
-                                  </div>
+                      {/* Regular Items */}
+                      {section.items && !section.groups && (
+                        <div className="space-y-2">
+                          {section.items.map((item, itemIndex) => (
+                            <div
+                              key={item.code}
+                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                            >
+                              <div className="flex-1">
+                                <div className="font-medium text-gray-900">
+                                  {item.code}
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {item.title}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {item.units} units
                                 </div>
                               </div>
-
-                              {/* Subsection Items */}
-                              {subsection.items && (
-                                <div className="space-y-2">
-                                  {subsection.items.map((item, itemIndex) => (
-                                    <div
-                                      key={item.code}
-                                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                                    >
-                                      <div className="flex-1">
-                                        <div className="font-medium text-gray-900">
-                                          {item.code}
-                                        </div>
-                                        <div className="text-sm text-gray-600">
-                                          {item.title}
-                                        </div>
-                                        <div className="text-xs text-gray-500">
-                                          {item.units} units
-                                        </div>
-                                      </div>
-                                      <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2">
+                                {/* Special handling for concentration selection */}
+                                {section.key === "concentration-selection" ? (
+                                  (() => {
+                                    const major = data.majors[majorIndex];
+                                    if (major.key === "polisci") {
+                                      // Political Science: two concentrations
+                                      return (
                                         <select
-                                          className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                            STATUS_META[
-                                              item.status as keyof typeof STATUS_META
-                                            ]?.color ||
-                                            "bg-gray-200 text-gray-800"
-                                          }`}
+                                          className="px-3 py-1 rounded text-sm font-medium transition-colors bg-blue-600 text-white"
                                           value={item.status}
-                                          onChange={(e) =>
-                                            updateItemStatus(
-                                              `majors.${majorIndex}.sections.${sectionIndex}.subsections.${subsectionIndex}.items.${itemIndex}`,
+                                          onChange={(e) => {
+                                            const type =
+                                              item.code ===
+                                              "Primary Concentration"
+                                                ? "primary"
+                                                : "secondary";
+                                            updateConcentrationSelection(
+                                              type,
                                               e.target.value
-                                            )
-                                          }
+                                            );
+                                          }}
                                         >
-                                          {Object.entries(STATUS_META).map(
-                                            ([key, value]) => (
-                                              <option key={key} value={key}>
-                                                {value.label}
+                                          <option value="">
+                                            Select concentration...
+                                          </option>
+                                          {CONCENTRATION_OPTIONS.map(
+                                            (option) => (
+                                              <option
+                                                key={option.value}
+                                                value={option.value}
+                                              >
+                                                {option.label}
                                               </option>
                                             )
                                           )}
                                         </select>
+                                      );
+                                    } else if (major.key === "symsys") {
+                                      // Symbolic Systems: one concentration
+                                      return (
+                                        <select
+                                          className="px-3 py-1 rounded text-sm font-medium transition-colors bg-purple-600 text-white"
+                                          value={item.status}
+                                          onChange={(e) => {
+                                            // Update the concentration selection for SymSys
+                                            setData((prevData: AppData) => {
+                                              const newData = JSON.parse(
+                                                JSON.stringify(prevData)
+                                              );
+                                              const symsysMajor =
+                                                newData.majors.find(
+                                                  (m: Major) =>
+                                                    m.key === "symsys"
+                                                );
+                                              if (!symsysMajor) return prevData;
+
+                                              const concentrationSection =
+                                                symsysMajor.sections.find(
+                                                  (s: CourseSection) =>
+                                                    s.key ===
+                                                    "concentration-selection"
+                                                );
+                                              if (
+                                                !concentrationSection ||
+                                                !concentrationSection.items
+                                              )
+                                                return prevData;
+
+                                              // Update the concentration selection
+                                              const concentrationItem =
+                                                concentrationSection.items.find(
+                                                  (
+                                                    concentrationItem: CourseItem
+                                                  ) =>
+                                                    concentrationItem.code ===
+                                                    "concentration"
+                                                );
+                                              if (concentrationItem) {
+                                                concentrationItem.status =
+                                                  e.target.value;
+                                              }
+
+                                              return newData;
+                                            });
+                                          }}
+                                        >
+                                          <option value="">
+                                            Select concentration...
+                                          </option>
+                                          {SYMSYS_CONCENTRATION_OPTIONS.map(
+                                            (option) => (
+                                              <option
+                                                key={option.value}
+                                                value={option.value}
+                                              >
+                                                {option.label}
+                                              </option>
+                                            )
+                                          )}
+                                        </select>
+                                      );
+                                    }
+                                    return null;
+                                  })()
+                                ) : (
+                                  <select
+                                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                      STATUS_META[
+                                        item.status as keyof typeof STATUS_META
+                                      ]?.color || "bg-gray-200 text-gray-800"
+                                    }`}
+                                    value={item.status}
+                                    onChange={(e) =>
+                                      updateItemStatus(
+                                        `majors.${majorIndex}.sections.${sectionIndex}.items.${itemIndex}`,
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    {Object.entries(STATUS_META).map(
+                                      ([key, value]) => (
+                                        <option key={key} value={key}>
+                                          {value.label}
+                                        </option>
+                                      )
+                                    )}
+                                  </select>
+                                )}
+
+                                {/* Remove button for editable sections */}
+                                {section.editable && (
+                                  <button
+                                    onClick={() =>
+                                      removeCourse(
+                                        majorIndex,
+                                        sectionIndex,
+                                        itemIndex
+                                      )
+                                    }
+                                    className="px-2 py-1 text-red-600 hover:bg-red-50 rounded text-sm"
+                                  >
+                                    ×
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+
+                          {/* Show selected concentration courses */}
+                          {section.key === "concentration-selection" && (
+                            <div className="mt-6 space-y-4">
+                              {(() => {
+                                const major = data.majors[majorIndex];
+                                if (major.key === "polisci") {
+                                  // Political Science: show primary and secondary concentrations
+                                  const { primary, secondary } =
+                                    getConcentrationSelection();
+                                  return (
+                                    <>
+                                      {/* Primary Concentration Courses */}
+                                      {primary && (
+                                        <div className="border-l-4 border-blue-500 pl-4">
+                                          <h4 className="font-semibold text-blue-700 mb-3">
+                                            {
+                                              CONCENTRATION_OPTIONS.find(
+                                                (opt) => opt.value === primary
+                                              )?.label
+                                            }{" "}
+                                            (Primary - ≥25 units)
+                                          </h4>
+                                          <div className="space-y-2">
+                                            {getConcentrationCourses(
+                                              primary
+                                            ).map((course, courseIndex) => (
+                                              <div
+                                                key={course.code}
+                                                className="flex items-center justify-between p-3 bg-blue-50 rounded-lg"
+                                              >
+                                                <div className="flex-1">
+                                                  <div className="font-medium text-gray-900">
+                                                    {course.code}
+                                                  </div>
+                                                  <div className="text-sm text-gray-600">
+                                                    {course.title}
+                                                  </div>
+                                                  <div className="text-xs text-gray-500">
+                                                    {course.units} units
+                                                  </div>
+                                                </div>
+                                                <select
+                                                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                                    STATUS_META[
+                                                      course.status as keyof typeof STATUS_META
+                                                    ]?.color ||
+                                                    "bg-gray-200 text-gray-800"
+                                                  }`}
+                                                  value={course.status}
+                                                  onChange={(e) => {
+                                                    // Find the actual path to update this course
+                                                    const polisciMajorIndex =
+                                                      data.majors.findIndex(
+                                                        (m) =>
+                                                          m.key === "polisci"
+                                                      );
+                                                    const concentrationSectionIndex =
+                                                      data.majors[
+                                                        polisciMajorIndex
+                                                      ].sections.findIndex(
+                                                        (s) =>
+                                                          s.key ===
+                                                          `${primary}-concentration`
+                                                      );
+                                                    updateItemStatus(
+                                                      `majors.${polisciMajorIndex}.sections.${concentrationSectionIndex}.items.${courseIndex}`,
+                                                      e.target.value
+                                                    );
+                                                  }}
+                                                >
+                                                  {Object.entries(
+                                                    STATUS_META
+                                                  ).map(([key, value]) => (
+                                                    <option
+                                                      key={key}
+                                                      value={key}
+                                                    >
+                                                      {value.label}
+                                                    </option>
+                                                  ))}
+                                                </select>
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-3 text-sm text-blue-600">
+                                            Progress:{" "}
+                                            {Math.round(
+                                              calculateConcentrationProgress(
+                                                primary,
+                                                25
+                                              )
+                                            )}
+                                            % (
+                                            {sumUnitsTaken(
+                                              getConcentrationCourses(primary)
+                                            )}
+                                            /25 units)
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {/* Secondary Concentration Courses */}
+                                      {secondary && (
+                                        <div className="border-l-4 border-green-500 pl-4">
+                                          <h4 className="font-semibold text-green-700 mb-3">
+                                            {
+                                              CONCENTRATION_OPTIONS.find(
+                                                (opt) => opt.value === secondary
+                                              )?.label
+                                            }{" "}
+                                            (Secondary - ≥15 units)
+                                          </h4>
+                                          <div className="space-y-2">
+                                            {getConcentrationCourses(
+                                              secondary
+                                            ).map((course, courseIndex) => (
+                                              <div
+                                                key={course.code}
+                                                className="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+                                              >
+                                                <div className="flex-1">
+                                                  <div className="font-medium text-gray-900">
+                                                    {course.code}
+                                                  </div>
+                                                  <div className="text-sm text-gray-600">
+                                                    {course.title}
+                                                  </div>
+                                                  <div className="text-xs text-gray-500">
+                                                    {course.units} units
+                                                  </div>
+                                                </div>
+                                                <select
+                                                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                                    STATUS_META[
+                                                      course.status as keyof typeof STATUS_META
+                                                    ]?.color ||
+                                                    "bg-gray-200 text-gray-800"
+                                                  }`}
+                                                  value={course.status}
+                                                  onChange={(e) => {
+                                                    // Find the actual path to update this course
+                                                    const polisciMajorIndex =
+                                                      data.majors.findIndex(
+                                                        (m) =>
+                                                          m.key === "polisci"
+                                                      );
+                                                    const concentrationSectionIndex =
+                                                      data.majors[
+                                                        polisciMajorIndex
+                                                      ].sections.findIndex(
+                                                        (s) =>
+                                                          s.key ===
+                                                          `${secondary}-concentration`
+                                                      );
+                                                    updateItemStatus(
+                                                      `majors.${polisciMajorIndex}.sections.${concentrationSectionIndex}.items.${courseIndex}`,
+                                                      e.target.value
+                                                    );
+                                                  }}
+                                                >
+                                                  {Object.entries(
+                                                    STATUS_META
+                                                  ).map(([key, value]) => (
+                                                    <option
+                                                      key={key}
+                                                      value={key}
+                                                    >
+                                                      {value.label}
+                                                    </option>
+                                                  ))}
+                                                </select>
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-3 text-sm text-green-600">
+                                            Progress:{" "}
+                                            {Math.round(
+                                              calculateConcentrationProgress(
+                                                secondary,
+                                                15
+                                              )
+                                            )}
+                                            % (
+                                            {sumUnitsTaken(
+                                              getConcentrationCourses(secondary)
+                                            )}
+                                            /15 units)
+                                          </div>
+                                        </div>
+                                      )}
+                                    </>
+                                  );
+                                } else if (major.key === "symsys") {
+                                  // Symbolic Systems: show selected concentration
+                                  const selectedConcentration =
+                                    getSymSysConcentrationSelection();
+                                  if (!selectedConcentration) return null;
+
+                                  return (
+                                    <div className="border-l-4 border-purple-500 pl-4">
+                                      <h4 className="font-semibold text-purple-700 mb-3">
+                                        {
+                                          SYMSYS_CONCENTRATION_OPTIONS.find(
+                                            (opt) =>
+                                              opt.value ===
+                                              selectedConcentration
+                                          )?.label
+                                        }{" "}
+                                        Concentration
+                                      </h4>
+                                      <div className="space-y-2">
+                                        {getSymSysConcentrationCourses(
+                                          selectedConcentration
+                                        ).map((course, courseIndex) => (
+                                          <div
+                                            key={course.code}
+                                            className="flex items-center justify-between p-3 bg-purple-50 rounded-lg"
+                                          >
+                                            <div className="flex-1">
+                                              <div className="font-medium text-gray-900">
+                                                {course.code}
+                                              </div>
+                                              <div className="text-sm text-gray-600">
+                                                {course.title}
+                                              </div>
+                                              <div className="text-xs text-gray-500">
+                                                {course.units} units
+                                              </div>
+                                            </div>
+                                            <select
+                                              className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                                STATUS_META[
+                                                  course.status as keyof typeof STATUS_META
+                                                ]?.color ||
+                                                "bg-gray-200 text-gray-800"
+                                              }`}
+                                              value={course.status}
+                                              onChange={(e) => {
+                                                // Find the actual path to update this course
+                                                const symsysMajorIndex =
+                                                  data.majors.findIndex(
+                                                    (m) => m.key === "symsys"
+                                                  );
+                                                const concentrationSectionIndex =
+                                                  data.majors[
+                                                    symsysMajorIndex
+                                                  ].sections.findIndex(
+                                                    (s) =>
+                                                      s.key ===
+                                                      `${selectedConcentration}-concentration`
+                                                  );
+                                                updateItemStatus(
+                                                  `majors.${symsysMajorIndex}.sections.${concentrationSectionIndex}.items.${courseIndex}`,
+                                                  e.target.value
+                                                );
+                                              }}
+                                            >
+                                              {Object.entries(STATUS_META).map(
+                                                ([key, value]) => (
+                                                  <option key={key} value={key}>
+                                                    {value.label}
+                                                  </option>
+                                                )
+                                              )}
+                                            </select>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <div className="mt-3 text-sm text-purple-600">
+                                        Progress:{" "}
+                                        {Math.round(
+                                          calculateSymSysConcentrationProgress(
+                                            selectedConcentration
+                                          )
+                                        )}
+                                        %
                                       </div>
                                     </div>
-                                  ))}
-                                </div>
-                              )}
+                                  );
+                                }
+                                return null;
+                              })()}
                             </div>
-                          )
-                        )}
-                      </div>
-                    )}
+                          )}
+
+                          {/* Add course form for editable sections */}
+                          {section.editable && (
+                            <div className="border-t pt-4">
+                              <div className="flex gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="Course code (e.g., POLISCI 150)"
+                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      const target =
+                                        e.target as HTMLInputElement;
+                                      const code = target.value;
+                                      const titleInput = target.parentElement
+                                        ?.nextElementSibling as HTMLInputElement;
+                                      const unitsInput =
+                                        titleInput?.nextElementSibling as HTMLInputElement;
+                                      if (
+                                        code &&
+                                        titleInput?.value &&
+                                        unitsInput?.value
+                                      ) {
+                                        addCourse(
+                                          majorIndex,
+                                          sectionIndex,
+                                          code,
+                                          titleInput.value,
+                                          parseInt(unitsInput.value)
+                                        );
+                                        target.value = "";
+                                        titleInput.value = "";
+                                        unitsInput.value = "";
+                                      }
+                                    }
+                                  }}
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Course title"
+                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                />
+                                <input
+                                  type="number"
+                                  placeholder="Units"
+                                  className="w-20 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Subsections (for complex sections like Capstone) */}
+                      {section.subsections && (
+                        <div className="space-y-4">
+                          {section.subsections.map(
+                            (subsection, subsectionIndex) => (
+                              <div
+                                key={subsection.key}
+                                className="ml-4 border-l-2 border-gray-200 pl-4"
+                              >
+                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-3">
+                                  <div className="flex-1">
+                                    <div className="font-medium text-gray-900">
+                                      {subsection.title}
+                                    </div>
+                                    {subsection.description && (
+                                      <div className="text-sm text-gray-600 mt-1">
+                                        {subsection.description}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Subsection Progress */}
+                                  <div className="flex items-center gap-3">
+                                    <div className="text-right">
+                                      <div className="text-sm font-medium text-gray-700">
+                                        Progress
+                                      </div>
+                                      <div className="text-lg font-bold text-blue-600">
+                                        {Math.round(
+                                          sectionProgress(subsection)
+                                        )}
+                                        %
+                                      </div>
+                                    </div>
+                                    <div className="w-24 bg-gray-200 rounded-full h-3">
+                                      <div
+                                        className={`h-3 rounded-full transition-all duration-300 ${
+                                          sectionSatisfied(subsection)
+                                            ? "bg-green-600"
+                                            : "bg-blue-600"
+                                        }`}
+                                        style={{
+                                          width: `${sectionProgress(
+                                            subsection
+                                          )}%`,
+                                        }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Subsection Items */}
+                                {subsection.items && (
+                                  <div className="space-y-2">
+                                    {subsection.items.map((item, itemIndex) => (
+                                      <div
+                                        key={item.code}
+                                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                      >
+                                        <div className="flex-1">
+                                          <div className="font-medium text-gray-900">
+                                            {item.code}
+                                          </div>
+                                          <div className="text-sm text-gray-600">
+                                            {item.title}
+                                          </div>
+                                          <div className="text-xs text-gray-500">
+                                            {item.units} units
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <select
+                                            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                              STATUS_META[
+                                                item.status as keyof typeof STATUS_META
+                                              ]?.color ||
+                                              "bg-gray-200 text-gray-800"
+                                            }`}
+                                            value={item.status}
+                                            onChange={(e) =>
+                                              updateItemStatus(
+                                                `majors.${majorIndex}.sections.${sectionIndex}.subsections.${subsectionIndex}.items.${itemIndex}`,
+                                                e.target.value
+                                              )
+                                            }
+                                          >
+                                            {Object.entries(STATUS_META).map(
+                                              ([key, value]) => (
+                                                <option key={key} value={key}>
+                                                  {value.label}
+                                                </option>
+                                              )
+                                            )}
+                                          </select>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         ))}

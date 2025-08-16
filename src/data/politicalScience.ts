@@ -1,4 +1,4 @@
-import { STATUS, RULE } from './constants';
+import { STATUS, RULE } from "./constants";
 
 // Political Science B.A. Requirements
 export const POLITICAL_SCIENCE_DATA = {
@@ -11,89 +11,1708 @@ export const POLITICAL_SCIENCE_DATA = {
       description: "Must be taken in freshman or sophomore year.",
       rule: { type: RULE.ALL_OF },
       items: [
-        { code: "POLISCI 1", title: "The Science of Politics", units: 5, status: STATUS.NOT }
-      ]
+        {
+          code: "POLISCI 1",
+          title: "The Science of Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
     },
     {
       key: "methods",
       title: "Methods Course",
-      description: "Select one of the following methods courses.",
+      description: "Take ONE of the following methods courses.",
       rule: { type: RULE.ONE_OF },
       items: [
-        { code: "POLISCI 150A", title: "Data Science for Politics", units: 5, status: STATUS.NOT },
-        { code: "STATS 60", title: "Introduction to Statistical Methods: Precalculus", units: 4, status: STATUS.NOT },
-        { code: "STATS 101", title: "Data Science 101", units: 5, status: STATUS.NOT },
-        { code: "ECON 102A", title: "Intro to Statistical Methods (Postcalculus) for Social Scientists", units: 5, status: STATUS.NOT },
-        { code: "CS 106A", title: "Programming Methodology", units: 5, status: STATUS.NOT },
-        { code: "CS 106B", title: "Programming Abstractions", units: 5, status: STATUS.NOT }
-      ]
+        {
+          code: "POLISCI 150A",
+          title: "Data Science for Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "STATS 60",
+          title: "Introduction to Statistical Methods: Precalculus",
+          units: 4,
+          status: STATUS.NOT,
+        },
+        {
+          code: "STATS 101",
+          title: "Data Science 101",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "ECON 102A",
+          title:
+            "Intro to Statistical Methods (Postcalculus) for Social Scientists",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "CS 106A",
+          title: "Programming Methodology",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "CS 106B",
+          title: "Programming Abstractions",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
     },
     {
-      key: "primary-track",
-      title: "Primary Track (≥25 units)",
-      description: "Choose one track (Data Science; Elections, Representation & Governance; International Relations; Justice & Law; Political Economy & Development).",
+      key: "concentration-selection",
+      title: "Concentration Selection",
+      description:
+        "Choose your primary and secondary concentrations. You must complete at least 25 units in your primary concentration and 15 units in your secondary concentration.",
+      rule: { type: RULE.ALL_OF },
+      items: [
+        {
+          code: "Primary Concentration",
+          title: "Select your primary concentration (≥25 units required)",
+          units: 0,
+          status: STATUS.NOT,
+        },
+        {
+          code: "Secondary Concentration",
+          title: "Select your secondary concentration (≥15 units required)",
+          units: 0,
+          status: STATUS.NOT,
+        },
+      ],
+    },
+    {
+      key: "data-science-concentration",
+      title: "Data Science Concentration",
+      description:
+        "Complete at least 25 units from this concentration for your primary track, or 15 units for your secondary track.",
       rule: { type: RULE.UNITS_AT_LEAST, minUnits: 25 },
-      editable: true,
+      hidden: true, // Hide this section until selected
       items: [
-        { code: "TRACK-1", title: "Add primary-track course", units: 5, status: STATUS.NOT }
-      ]
+        {
+          code: "POLISCI 120B",
+          title: "Campaigns, Voting, Media, and Elections",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 127",
+          title: "Controversies in American Public Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 141A",
+          title: "Immigration and Multiculturalism",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 147P",
+          title: "The Politics of Inequality",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 150A/355A",
+          title: "Data Science for Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 150B/355B",
+          title: "Machine Learning for Social Scientists",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 150C/355C",
+          title: "Causal Inference for Social Science",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 151",
+          title: "Tackling Big Questions Using Social Data Science",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 153/354",
+          title: "Thinking Strategically",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 153Z",
+          title: "Thinking Strategically",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 154",
+          title: "Solving Social Problems with Data",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 156",
+          title: "Data Algorithms, Tools, Policy, and Society",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 182",
+          title: "Ethics, Public Policy, and Technological Change",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 227C",
+          title: "Money in Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 241S",
+          title: "Spatial Approaches to Social Science",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 247A/347A",
+          title: "Games Developing Nations Play",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 251A",
+          title: "Introduction to Machine Learning for Social Scientists",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 344",
+          title: "Politics and Geography",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 356A",
+          title: "Formal Theory I: Game Theory for Political Science",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 356B",
+          title: "Formal Theory II: Models of Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 358",
+          title: "Data-driven Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
     },
     {
-      key: "secondary-track",
-      title: "Secondary Track (≥15 units)",
-      description: "Choose a second track from the available options.",
-      rule: { type: RULE.UNITS_AT_LEAST, minUnits: 15 },
-      editable: true,
+      key: "elections-governance-concentration",
+      title: "Elections, Representation & Governance Concentration",
+      description:
+        "Complete at least 25 units from this concentration for your primary track, or 15 units for your secondary track.",
+      rule: { type: RULE.UNITS_AT_LEAST, minUnits: 25 },
+      hidden: true, // Hide this section until selected
       items: [
-        { code: "TRACK-2", title: "Add secondary-track course", units: 5, status: STATUS.NOT }
-      ]
+        {
+          code: "POLISCI 20N",
+          title: "The American Electorate in the Trump Era",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 20Q",
+          title: "Democracy in Crisis: Learning from the Past",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 25N",
+          title: "The US Congress in Historical and Comparative Perspective",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 31N",
+          title:
+            "Political Freedom: Rights, Justice, and Democracy in the Western Tradition",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 34Q",
+          title: "Nationalism",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 72",
+          title:
+            "Policy, Politics, and the 2020 Elections: What 2020 Means for Future Campaigns and Elections",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 82",
+          title: "Politics 2022: America at a Crossroads",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 102",
+          title:
+            "Introduction to American Politics and Policy: The Good, The Bad, and The Ugly",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 110D/110Y",
+          title: "War and Peace in American Foreign Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 115",
+          title: "Spies, Lies, and Algorithms",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 120B",
+          title: "Campaigns, Voting, Media, and Elections",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 120C",
+          title: "American Political Institutions in Uncertain Times",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 120Z",
+          title:
+            "What's Wrong with American Government? An Institutional Approach",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 121L",
+          title: "Racial-Ethnic Politics in US",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 124A",
+          title: "The American West",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 124L",
+          title: "The Psychology of Communication About Politics in America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 125P",
+          title: "The First Amendment: Freedom of Speech and Press",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 127",
+          title: "Controversies in American Public Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 130",
+          title: "20th Century Political Theory: Liberalism and Its Critics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 131L",
+          title: "Modern Political Thought: Machiavelli to Marx to Mill",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 132A",
+          title: "The Ethics of Elections",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 134P",
+          title: "Contemporary Moral Problems",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 134L",
+          title: "Introduction to Environmental Ethics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 135",
+          title: "Citizenship",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 140P",
+          title: "Populism and the Erosion of Democracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 143C",
+          title: "The Politics of Internet Abuse",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 147",
+          title: "Comparative Democratic Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 147B",
+          title: "Gender, Identity, and Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 147P",
+          title: "The Politics of Inequality",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 148/348",
+          title: "Chinese Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 149T",
+          title: "Middle Eastern Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 150A/355A",
+          title: "Data Science for Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 213E",
+          title: "Introduction to European Studies",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 217A",
+          title: "American Foreign Policy: Interests, Values, and Process",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 220",
+          title: "Urban Policy Research Lab",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 220C/320C",
+          title: "The Politics of the Administrative State",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 220R/320R",
+          title: "The Presidency",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 222",
+          title: "The Political Psychology of Intolerance",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 222F",
+          title: "Seminar on Political Change in the United States",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 223",
+          title: "Gender & U.S. Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 223A",
+          title: "Public Opinion and American Democracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 224",
+          title: "Identity",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 225",
+          title: "Gender and Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 226",
+          title: "Superpower California: The Indispensable State",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 226A",
+          title: "The Changing Face of America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 226T/326T",
+          title: "The Politics of Education",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 227C",
+          title: "Money in Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 228C",
+          title: "Law and Politics of Bureaucracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 234",
+          title: "Democratic Theory",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 241",
+          title:
+            "The Political Economy of China: Policy and Development from Antiquity to Revolution",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 241A",
+          title: "Political Economy of Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 242G/342G",
+          title: "Political Mobilization and Democratic Breakthroughs",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244A",
+          title: "Authoritarian Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244U/344U",
+          title: "Political Culture",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 245R",
+          title: "Politics of Modern Iran",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 246A",
+          title:
+            "Paths to the Modern World: The West in Comparative Perspective",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 246H",
+          title: "Populism in the Americas",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 247G",
+          title: "Governance and Poverty",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 248S/348S",
+          title: "Latin American Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 249R",
+          title: "The Political Economy of Tax Evasion",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 293",
+          title: "Democracy in the Balance",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 327C",
+          title: "Law of Democracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 344",
+          title: "Politics and Geography",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
     },
     {
-      key: "additional",
-      title: "Additional Related Coursework (≥20 units)",
-      description: "Additional Political Science coursework to reach the 70-unit minimum.",
-      rule: { type: RULE.UNITS_AT_LEAST, minUnits: 20 },
-      editable: true,
+      key: "international-relations-concentration",
+      title: "International Relations Concentration",
+      description:
+        "Complete at least 25 units from this concentration for your primary track, or 15 units for your secondary track.",
+      rule: { type: RULE.UNITS_AT_LEAST, minUnits: 25 },
+      hidden: true, // Hide this section until selected
       items: [
-        { code: "POLISCI-ADD-1", title: "Add related POLISCI course", units: 4, status: STATUS.NOT }
-      ]
+        {
+          code: "POLISCI 79",
+          title: "Security Issues in the Middle East",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 101",
+          title: "Introduction to International Relations",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 101Z",
+          title: "Introduction to International Relations",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 110C/110X",
+          title: "America and the World Economy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 110D/110Y",
+          title: "War and Peace in American Foreign Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 111",
+          title: "The Politics of Climate Change",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 113",
+          title:
+            "Understanding Russia: Its Power and Purpose in a New Global Order",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 114D/314D",
+          title: "Democracy, Development, and the Rule of Law",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 114S",
+          title: "International Security in a Changing World",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 115",
+          title: "Spies, Lies, and Algorithms",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 115B",
+          title: "Israel, the Middle East and Nuclear Weapons",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 116M",
+          title: "Global Futures: History, Statecraft, Systems",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 117/317",
+          title: "Chinese Politics and Society: An Expert-Led Seminar",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 118P",
+          title: "U.S. Relations with Iran",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 119",
+          title:
+            "Sustainable Societies Lab: Models of Israeli-Arab Cooperation",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 136R/336",
+          title: "Introduction to Global Justice",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 142",
+          title:
+            "The Eurasian World From Plato to NATO: History, Politics, and Culture",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 143C",
+          title: "The Politics of Internet Abuse",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 147",
+          title: "Comparative Democratic Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 149S",
+          title: "Islam, Iran, and the West",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 211N/311N",
+          title: "Nuclear Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 213E",
+          title: "Introduction to European Studies",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 214",
+          title: "Israel: Society, Politics, and Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 214R/314R",
+          title: "Challenge and Dilemmas in American Foreign Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 217A",
+          title: "American Foreign Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 217",
+          title: "The World and America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 218T",
+          title: "The Politics of Insurgency, Terrorism and Civil War",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 235",
+          title: "Chinese Political Thought: 1895-2021",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 235M",
+          title:
+            "Cold War Political Theory: From the Center to the Peripheries",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 237",
+          title: "Varieties of Conservatism in America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 242/342",
+          title: "Foreign Policy Decision Making in Comparative Perspective",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244C",
+          title: "Wealth of Nations",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 248D",
+          title: "China in the Global Economy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 312",
+          title: "A New Cold War? Great Power Relations in the 21st Century",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
+    },
+    {
+      key: "justice-law-concentration",
+      title: "Justice and Law Concentration",
+      description:
+        "Complete at least 25 units from this concentration for your primary track, or 15 units for your secondary track.",
+      rule: { type: RULE.UNITS_AT_LEAST, minUnits: 25 },
+      hidden: true, // Hide this section until selected
+      items: [
+        {
+          code: "POLISCI 31N",
+          title:
+            "Political Freedom: Rights, Justice, and Democracy in the Western Tradition",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 31Q",
+          title: "Justice and Cities",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 102",
+          title:
+            "Introduction to American Politics and Policy: The Good, The Bad, and The Ugly",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 103/336S",
+          title: "Justice",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 114D/314D",
+          title: "Democracy, Development, and the Rule of Law",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 125P",
+          title: "The First Amendment: Freedom of Speech and Press",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 126",
+          title:
+            "Between Malcolm X and Martin Luther King, JR.: Race, Religion and the Politics of Freedom",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 127A",
+          title: "Finance and Society for non-MBAs",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 130",
+          title: "20th Century Political Theory: Liberalism and its Critics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 131L",
+          title: "Modern Political Thought: Machiavelli to Marx to Mill",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 132A",
+          title: "The Ethics of Elections",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 133",
+          title: "Ethics and Politics of Public Service",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 133Z",
+          title: "Ethics and Politics in Public Service",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 134",
+          title: "Ethics for Activists",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 134E/338",
+          title: "Universal Basic Income: the philosophy behind the proposal",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 134L",
+          title: "Introduction to Environmental Ethics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 134P",
+          title: "Contemporary Moral Problems",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 135",
+          title: "Citizenship",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 135E/235E",
+          title: "Philosophy of Public Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 136R/336",
+          title: "Introduction to Global Justice",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 137",
+          title: "Philosophy of Law: Protest, Punishment, and Racial Justice",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 137A/337A",
+          title: "Political Philosophy: The Social Contract Tradition",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 138E",
+          title: "Egalitarianism & Anti-Egalitarianism",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 182",
+          title: "Ethics, Public Policy, and Technological Change",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 221A",
+          title: "American Political Development, 1865-present",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 222S",
+          title: "Topics in Constitutional History",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 223",
+          title: "Gender & U.S. Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 225L/325L",
+          title: "Law and the New Political Economy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 226A",
+          title: "The Changing Face of America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 228C",
+          title: "Law and Politics of Bureaucracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 228R",
+          title: "Strangers, Foreigners, and Politics of Difference",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 230",
+          title: "Political Theology",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 230A/330A",
+          title: "Classical Seminar: Origins of Political Thought",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 231/331",
+          title:
+            "High-Stakes Politics: Case Studies in Political Philosophy, Institutions, and Interests",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 231A",
+          title:
+            "Democracy Ancient and Modern: From Politics to Political Theory",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 232",
+          title: "The Science and Politics of Apocalypse",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 232T/332T",
+          title: "The Dialogue of Democracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 233",
+          title: "Justice and Cities",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 234",
+          title: "Democratic Theory",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 234N",
+          title: "The Concept of Society from Marx to Zuckerberg",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 234S",
+          title: "The Political Theory of Progress Reconsidered",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 234P/334P",
+          title: "Deliberative Democracy and its Critics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 235",
+          title: "Chinese Political Thought: 1895-2021",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 235A/335A",
+          title:
+            "From Cold War to New Cold War: Politics and Political Theory in Contemporary China",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 235B/335B",
+          title: "Political Memory and Democratic Citizenship",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 235M",
+          title:
+            "Cold War Political Theory: From the Center to the Peripheries",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 235N",
+          title: "Political Thought in Modern Asia",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 236/236S",
+          title:
+            "Ethical and Effective Philanthropy for Sustainable Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 237",
+          title: "Varieties of Conservatism in America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 237R/337R",
+          title: "Apocalyptic Thinking",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 238R",
+          title:
+            "The Greeks and the Rational: Deliberation, Strategy, and Choice in Ancient Greek Political Thought",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 327C",
+          title: "Law of Democracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 333M",
+          title: "Research and Methods in Political Theory",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 338B",
+          title: "Unequal Relationships",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
+    },
+    {
+      key: "political-economy-concentration",
+      title: "Political Economy and Development Concentration",
+      description:
+        "Complete at least 25 units from this concentration for your primary track, or 15 units for your secondary track.",
+      rule: { type: RULE.UNITS_AT_LEAST, minUnits: 25 },
+      hidden: true, // Hide this section until selected
+      items: [
+        {
+          code: "POLISCI 25N",
+          title: "The US Congress in Historical and Comparative Perspective",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 31Q",
+          title: "Justice and Cities",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 34Q",
+          title: "Nationalism",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 46N",
+          title: "Contemporary African Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 101",
+          title: "Introduction to International Relations",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 101Z",
+          title: "Introduction to International Relations",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 102",
+          title:
+            "Introduction to American Politics and Policy: The Good, The Bad, and The Ugly",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 103/336S",
+          title: "Justice",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 110C/110X",
+          title: "America and the World Economy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 117/317",
+          title: "Chinese Politics and Society: An Expert-Led Seminar",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 118P",
+          title: "U.S. Relations with Iran",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 120B",
+          title: "Campaigns, Voting, Media, and Elections",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 121L",
+          title: "Racial-Ethnic Politics in US",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 124L/324L",
+          title: "The Psychology of Communication About Politics in America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 125S",
+          title: "Chicano/Latino Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 127",
+          title: "Controversies in American Public Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 127A",
+          title: "Finance and Society for non-MBAs",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 137A/337A",
+          title: "Political Philosophy: The Social Contract Tradition",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 141",
+          title: "Political Economy of Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 141A",
+          title: "Immigration and Multiculturalism",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 142",
+          title:
+            "The Eurasian World From Plato to NATO: History, Politics, and Culture",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 147",
+          title: "Comparative Democratic Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 147B",
+          title: "Gender, Identity, and Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 148/348",
+          title: "Chinese Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 149S",
+          title: "Islam, Iran, and the West",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 149T",
+          title: "Middle Eastern Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 153/354",
+          title: "Thinking Strategically",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 153Z",
+          title: "Strategy: Introduction to Game Theory",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 204E",
+          title: "Totalitarianism",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 210A",
+          title: "Special Topics: Solving Global Challenges",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 213E",
+          title: "Introduction to European Studies",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 214",
+          title: "Israel: Society, Politics, and Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 220",
+          title: "Urban Policy Research Lab",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 220C/320C",
+          title: "The Politics of the Administrative State",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 220R/320R",
+          title: "The Presidency",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 221A",
+          title: "American Political Development, 1865-present",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 222P",
+          title: "Creating American Republic",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 223",
+          title: "Gender & U.S. Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 225L/325L",
+          title: "Law and the New Political Economy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 226",
+          title: "Superpower California: The Indispensable State",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 230",
+          title: "Political Theology",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 231/331",
+          title:
+            "High-Stakes Politics: Case Studies in Political Philosophy, Institutions, and Interests",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 232",
+          title: "The Science and Politics of Apocalypse",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 232T/332T",
+          title: "The Dialogue of Democracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 233R",
+          title: "Modern Islamic Political Thought",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 234P/334P",
+          title: "Deliberative Democracy and its Critics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 236/236S",
+          title:
+            "Ethical and Effective Philanthropy for Sustainable Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 238R",
+          title: "Ancient Greek Rationality, Public and Private",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 241",
+          title:
+            "The Political Economy of China: Policy and Development from Antiquity to Revolution",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 241A",
+          title: "Political Economy of Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 241S",
+          title: "Spatial Approaches to Social Science",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 241T",
+          title: "Political Economy of Gender",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 242G/342G",
+          title: "Political Mobilization and Democratic Breakthroughs",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 243",
+          title: "Political Economy of Latin America",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244A",
+          title: "Authoritarian Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244C",
+          title: "Wealth of Nations",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244D",
+          title: "Societal Collapse",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244H",
+          title:
+            "What Future for Democracy? Turkey's Experience in a Comparative Perspective",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 244U/344U",
+          title: "Political Culture",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 245C",
+          title:
+            "The Logics of Violence: Rebels, Criminal Groups and the State",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 245R",
+          title: "Politics of Modern Iran",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 246A/446A",
+          title:
+            "Paths to the Modern World: The West in Comparative Perspective",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 246H",
+          title: "Populism in the Americas",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 246P/346P",
+          title: "The Dynamics of Change in Africa",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 247A/347A",
+          title: "Games Developing Nations Play",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 247G",
+          title: "Governance and Poverty",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 248D/348D",
+          title: "China in the Global Economy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 248S/348S",
+          title: "Latin American Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 249R",
+          title: "The Political Economy of Tax Evasion",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 312",
+          title: "A New Cold War? Great Power Relations in the 21st Century",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 327C",
+          title: "Law of Democracy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 344",
+          title: "Politics and Geography",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
     },
     {
       key: "seminar",
       title: "Undergraduate Seminar (200- or 300-level)",
-      description: "Take one 5-unit POLISCI 200- or 300-level undergraduate seminar.",
+      description:
+        "Take ONE 5-unit POLISCI 200- or 300-level undergraduate seminar.",
       rule: { type: RULE.AT_LEAST, count: 1 },
-      editable: true,
       items: [
-        { code: "POLISCI 2xx/3xx", title: "Designated undergraduate seminar", units: 5, status: STATUS.NOT }
-      ]
+        {
+          code: "POLISCI 200+",
+          title: "Any POLISCI 200- or 300-level seminar",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
     },
     {
       key: "wim",
       title: "Writing in the Major (WIM)",
-      description: "Select one of the following WIM courses. Note: POLISCI 299A only fulfills the WIM requirement for students writing an Honors Thesis.",
+      description:
+        "Take ONE of the following WIM courses. Note: POLISCI 299A only fulfills the WIM requirement for students writing an Honors Thesis.",
       rule: { type: RULE.ONE_OF },
       items: [
         { code: "POLISCI 103", title: "Justice", units: 5, status: STATUS.NOT },
-        { code: "POLISCI 110C", title: "America and the World Economy", units: 5, status: STATUS.NOT },
-        { code: "POLISCI 110D", title: "War and Peace in American Foreign Policy", units: 5, status: STATUS.NOT },
-        { code: "POLISCI 120C", title: "American Political Institutions in Uncertain Times", units: 5, status: STATUS.NOT },
-        { code: "POLISCI 121", title: "Political Power in American Cities", units: 5, status: STATUS.NOT },
-        { code: "POLISCI 148", title: "Chinese Politics", units: 5, status: STATUS.NOT },
-        { code: "POLISCI 236S", title: "Ethical & Effective Philanthropy for Sustainable Development", units: 5, status: STATUS.NOT },
-        { code: "POLISCI 299A", title: "Research Design (WIM only if writing Honors Thesis)", units: 5, status: STATUS.NOT }
-      ]
+        {
+          code: "POLISCI 110C",
+          title: "America and the World Economy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 110D",
+          title: "War and Peace in American Foreign Policy",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 120C",
+          title: "American Political Institutions in Uncertain Times",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 121",
+          title: "Political Power in American Cities",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 148",
+          title: "Chinese Politics",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 236S",
+          title: "Ethical & Effective Philanthropy for Sustainable Development",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "POLISCI 299A",
+          title: "Research Design (WIM only if writing Honors Thesis)",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
     },
     {
       key: "capstone",
-      title: "Capstone — one of",
-      description: "Beginning AY 2024: complete either a Senior Honors Thesis or a designated POLISCI capstone seminar (200-level).",
+      title: "Capstone — Choose One",
+      description:
+        "Beginning AY 2024: complete either a Senior Honors Thesis or a designated POLISCI capstone seminar (200-level).",
       rule: { type: RULE.ONE_OF },
       items: [
-        { code: "CAP-Seminar", title: "Capstone Seminar (designated 200-level)", units: 5, status: STATUS.NOT },
-        { code: "CAP-Honors", title: "Senior Honors Thesis", units: 5, status: STATUS.NOT }
-      ]
-    }
-  ]
+        {
+          code: "Capstone Seminar",
+          title: "Capstone Seminar (designated 200-level)",
+          units: 5,
+          status: STATUS.NOT,
+        },
+        {
+          code: "Senior Honors Thesis",
+          title: "Senior Honors Thesis",
+          units: 5,
+          status: STATUS.NOT,
+        },
+      ],
+    },
+  ],
 };
-
