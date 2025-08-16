@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { STORAGE_KEY, STATUS, STATUS_META, RULE } from "./data/constants";
 import { sumUnitsTaken, countTaken } from "./utils/helpers";
 import { INITIAL_DATA } from "./data/initialData";
+import { SYMSYS_CONCENTRATIONS_DATA } from "./data/symbolicSystemsConcentrations";
 
 // Type definitions
 interface CourseItem {
@@ -1146,6 +1147,13 @@ function App() {
                                     getSymSysConcentrationSelection();
                                   if (!selectedConcentration) return null;
 
+                                  // Get the concentration data directly
+                                  const concentrationData =
+                                    SYMSYS_CONCENTRATIONS_DATA.concentrations.find(
+                                      (c) => c.key === selectedConcentration
+                                    );
+                                  if (!concentrationData) return null;
+
                                   return (
                                     <div className="border-l-4 border-purple-500 pl-4">
                                       <h4 className="font-semibold text-purple-700 mb-3">
@@ -1158,71 +1166,181 @@ function App() {
                                         }{" "}
                                         Concentration
                                       </h4>
-                                      <div className="space-y-2">
-                                        {getSymSysConcentrationCourses(
-                                          selectedConcentration
-                                        ).map((course, courseIndex) => (
-                                          <div
-                                            key={course.code}
-                                            className="flex items-center justify-between p-3 bg-purple-50 rounded-lg"
-                                          >
-                                            <div className="flex-1">
-                                              <div className="font-medium text-gray-900">
-                                                {course.code}
-                                              </div>
-                                              <div className="text-sm text-gray-600">
-                                                {course.title}
-                                              </div>
-                                              <div className="text-xs text-gray-500">
-                                                {course.units} units
+                                      <div className="space-y-4">
+                                        {concentrationData.subsections.map(
+                                          (subsection, subsectionIndex) => (
+                                            <div
+                                              key={subsection.key}
+                                              className="space-y-2"
+                                            >
+                                              <h5 className="font-medium text-purple-600 text-sm">
+                                                {subsection.title}
+                                              </h5>
+                                              <p className="text-xs text-gray-600 mb-2">
+                                                {subsection.description}
+                                              </p>
+                                              <div className="space-y-2">
+                                                {subsection.items.map(
+                                                  (course, courseIndex) => (
+                                                    <div
+                                                      key={course.code}
+                                                      className="flex items-center justify-between p-3 bg-purple-50 rounded-lg ml-4"
+                                                    >
+                                                      <div className="flex-1">
+                                                        <div className="font-medium text-gray-900">
+                                                          {course.code}
+                                                        </div>
+                                                        <div className="text-sm text-gray-600">
+                                                          {course.title}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">
+                                                          {course.units} units
+                                                        </div>
+                                                      </div>
+                                                      <select
+                                                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                                          STATUS_META[
+                                                            course.status as keyof typeof STATUS_META
+                                                          ]?.color ||
+                                                          "bg-gray-200 text-gray-800"
+                                                        }`}
+                                                        value={course.status}
+                                                        onChange={(e) => {
+                                                          // Update the course status in the concentration data
+                                                          setData(
+                                                            (
+                                                              prevData: AppData
+                                                            ) => {
+                                                              const newData =
+                                                                JSON.parse(
+                                                                  JSON.stringify(
+                                                                    prevData
+                                                                  )
+                                                                );
+                                                              const symsysMajor =
+                                                                newData.majors.find(
+                                                                  (m: Major) =>
+                                                                    m.key ===
+                                                                    "symsys"
+                                                                );
+                                                              if (!symsysMajor)
+                                                                return prevData;
+
+                                                              // Find and update the course status
+                                                              const concentrationSection =
+                                                                symsysMajor.sections.find(
+                                                                  (
+                                                                    s: CourseSection
+                                                                  ) =>
+                                                                    s.key ===
+                                                                    "concentration-selection"
+                                                                );
+                                                              if (
+                                                                !concentrationSection ||
+                                                                !concentrationSection.items
+                                                              )
+                                                                return prevData;
+
+                                                              // Update the concentration selection
+                                                              const concentrationItem =
+                                                                concentrationSection.items.find(
+                                                                  (
+                                                                    concentrationItem: CourseItem
+                                                                  ) =>
+                                                                    concentrationItem.code ===
+                                                                    "concentration"
+                                                                );
+                                                              if (
+                                                                concentrationItem
+                                                              ) {
+                                                                concentrationItem.status =
+                                                                  selectedConcentration;
+                                                              }
+
+                                                              return newData;
+                                                            }
+                                                          );
+                                                        }}
+                                                      >
+                                                        {Object.entries(
+                                                          STATUS_META
+                                                        ).map(
+                                                          ([key, value]) => (
+                                                            <option
+                                                              key={key}
+                                                              value={key}
+                                                            >
+                                                              {value.label}
+                                                            </option>
+                                                          )
+                                                        )}
+                                                      </select>
+                                                    </div>
+                                                  )
+                                                )}
                                               </div>
                                             </div>
-                                            <select
-                                              className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                                STATUS_META[
-                                                  course.status as keyof typeof STATUS_META
-                                                ]?.color ||
-                                                "bg-gray-200 text-gray-800"
-                                              }`}
-                                              value={course.status}
-                                              onChange={(e) => {
-                                                // Find the actual path to update this course
-                                                const symsysMajorIndex =
-                                                  data.majors.findIndex(
-                                                    (m) => m.key === "symsys"
-                                                  );
-                                                const concentrationSectionIndex =
-                                                  data.majors[
-                                                    symsysMajorIndex
-                                                  ].sections.findIndex(
-                                                    (s) =>
-                                                      s.key ===
-                                                      `${selectedConcentration}-concentration`
-                                                  );
-                                                updateItemStatus(
-                                                  `majors.${symsysMajorIndex}.sections.${concentrationSectionIndex}.items.${courseIndex}`,
-                                                  e.target.value
-                                                );
-                                              }}
-                                            >
-                                              {Object.entries(STATUS_META).map(
-                                                ([key, value]) => (
-                                                  <option key={key} value={key}>
-                                                    {value.label}
-                                                  </option>
-                                                )
-                                              )}
-                                            </select>
-                                          </div>
-                                        ))}
+                                          )
+                                        )}
                                       </div>
                                       <div className="mt-3 text-sm text-purple-600">
                                         Progress:{" "}
-                                        {Math.round(
-                                          calculateSymSysConcentrationProgress(
-                                            selectedConcentration
-                                          )
-                                        )}
+                                        {(() => {
+                                          // Calculate progress based on completed subsections
+                                          const totalSubsections =
+                                            concentrationData.subsections
+                                              .length;
+                                          const completedSubsections =
+                                            concentrationData.subsections.filter(
+                                              (subsection) => {
+                                                if (
+                                                  subsection.rule.type ===
+                                                  RULE.ALL_OF
+                                                ) {
+                                                  return subsection.items.every(
+                                                    (item) =>
+                                                      (item.status as string) ===
+                                                        STATUS.TAKEN ||
+                                                      (item.status as string) ===
+                                                        STATUS.CURRENTLY_TAKING
+                                                  );
+                                                } else if (
+                                                  subsection.rule.type ===
+                                                  RULE.ONE_OF
+                                                ) {
+                                                  return subsection.items.some(
+                                                    (item) =>
+                                                      (item.status as string) ===
+                                                        STATUS.TAKEN ||
+                                                      (item.status as string) ===
+                                                        STATUS.CURRENTLY_TAKING
+                                                  );
+                                                } else if (
+                                                  subsection.rule.type ===
+                                                  RULE.AT_LEAST
+                                                ) {
+                                                  const completed =
+                                                    subsection.items.filter(
+                                                      (item) =>
+                                                        (item.status as string) ===
+                                                          STATUS.TAKEN ||
+                                                        (item.status as string) ===
+                                                          STATUS.CURRENTLY_TAKING
+                                                    ).length;
+                                                  return (
+                                                    completed >=
+                                                    (subsection.rule.count || 0)
+                                                  );
+                                                }
+                                                return false;
+                                              }
+                                            ).length;
+                                          return Math.round(
+                                            (completedSubsections /
+                                              totalSubsections) *
+                                              100
+                                          );
+                                        })()}
                                         %
                                       </div>
                                     </div>

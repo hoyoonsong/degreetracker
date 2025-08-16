@@ -1,8 +1,9 @@
 import { STATUS, RULE } from "./constants";
+import { SYMSYS_CONCENTRATIONS_DATA } from "./symbolicSystemsConcentrations";
 
 // Symbolic Systems Core Requirements
 export const SYMBOLIC_SYSTEMS_DATA = {
-  key: "sym-sys",
+  key: "symsys",
   title: "Symbolic Systems (Core Requirements)",
   sections: [
     {
@@ -874,6 +875,21 @@ export const SYMBOLIC_SYSTEMS_DATA = {
           title: "An approved course meeting the criteria above",
           units: 3,
           status: STATUS.NOT,
+        },
+      ],
+    },
+    {
+      key: "concentration-selection",
+      title: "Concentration Selection",
+      description:
+        "Choose ONE concentration from the options below. You must complete all requirements for your selected concentration.",
+      rule: { type: RULE.ONE_OF },
+      items: [
+        {
+          code: "concentration",
+          title: "Select your concentration",
+          units: 0,
+          status: "",
         },
       ],
     },
